@@ -1,1 +1,51 @@
+.container {
+  padding: 40px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table tr {
+  width: 100%;
+}
+
+.table th {
+  background-color: #4464443a;
+}
+
+.table td:first-child {
+  background-color: #4464443a;
+}
+
+.table td:not(:first-child) {
+  cursor: pointer;
+}
+
+.table th, .table td{
+  padding: 14px;
+  border: 1px solid green;
+}
+
+.heatmap-cell {
+  background: linear-gradient(to right, #4caf50 0%, #f44336 100%);
+  color: white;
+}
+
+.close-button path {
+  fill: rgb(224, 57, 57);
+}
+
+.close-button { 
+  width: 30px;
+  height: 30px;
+}
+
+.sum-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
