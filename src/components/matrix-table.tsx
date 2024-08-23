@@ -1,9 +1,11 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { MatrixContext } from "../context/matrix-context";
 import CloseCircle from "../assets/icons/close-circle.svg?react";
+import { getAmountPercent, parseMatrix } from "../utils";
 
 const MatrixTable: React.FC = () => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>();
   const { matrix, incrementCellValue, highlightNearestCells, removeRow } =
     useContext(MatrixContext);
 
@@ -15,41 +17,65 @@ const MatrixTable: React.FC = () => {
     highlightNearestCells(rowIndex, colIndex);
   };
 
-  const cellsArray = new Array(matrix[0].length).fill("");
+  const { averageValues, rowSumValues } = parseMatrix(matrix);
 
   return (
     <table className="table">
       <thead>
         <tr>
           <th></th>
-          {cellsArray.map((_, idx) => (
-            <th key={idx}>Cell value N = {idx + 1}</th>
+          {averageValues.map((_, idx) => (
+            <th key={idx}>Cell {idx + 1}</th>
           ))}
           <th>Sum values</th>
-          {/* <th></th> */}
         </tr>
       </thead>
 
       <tbody>
         {matrix.map((row, rowIndex) => (
           <tr key={rowIndex}>
-            <td>Cell value M = {rowIndex + 1}</td>
-            {row.map((cell, colIndex) => (
-              <td
-                key={cell.id}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
-                onMouseOver={() => handleCellHover(rowIndex, colIndex)}
-              >
-                {cell.amount}
-              </td>
-            ))}
-            <td>
+            <td>Row {rowIndex + 1}</td>
+
+            {row.map((cell, colIndex) => {
+              const showPercent =
+                typeof hoveredIndex === "number" && hoveredIndex === rowIndex;
+              const percentAmount = getAmountPercent(
+                rowSumValues[rowIndex],
+                cell.amount
+              );
+
+              return (
+                <td
+                  key={cell.id}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                  onMouseOver={() => handleCellHover(rowIndex, colIndex)}
+                  style={
+                    showPercent
+                      ? {
+                          background: `linear-gradient(to right, #52ae55 0% ${percentAmount}%, #242424 ${percentAmount}% 100%)`,
+                          color: "white",
+                        }
+                      : {}
+                  }
+                >
+                  {showPercent ? `${percentAmount}%` : cell.amount}
+                </td>
+              );
+            })}
+
+            <td
+              onMouseLeave={() => setHoveredIndex(null)}
+              onMouseEnter={() => setHoveredIndex(rowIndex)}
+            >
               <div className="sum-wrapper">
-                <p>sum</p>
-                <CloseCircle
-                  className="close-button"
-                  onClick={() => removeRow(rowIndex)}
-                />
+                <p>{rowSumValues[rowIndex]}</p>
+
+                <div className="close-container">
+                  <CloseCircle
+                    className="close-button"
+                    onClick={() => removeRow(rowIndex)}
+                  />
+                </div>
               </div>
             </td>
           </tr>
@@ -59,8 +85,8 @@ const MatrixTable: React.FC = () => {
       <tfoot>
         <tr>
           <td>Average values</td>
-          {cellsArray.map((_, idx) => (
-            <td key={idx}>{idx + 1}</td>
+          {averageValues.map((val, idx) => (
+            <td key={idx}>{val}</td>
           ))}
           <td></td>
         </tr>

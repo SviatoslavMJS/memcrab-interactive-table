@@ -11,7 +11,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>React Matrix Table</h1>
+      <h1>Memcrab Matrix Table</h1>
       <MatrixTable />
       <AddRowButton />
     </div>

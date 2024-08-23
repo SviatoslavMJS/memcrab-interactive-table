@@ -6,7 +6,7 @@ const AddRowButton: React.FC = () => {
     const { addRow } = useContext(MatrixContext);
 
     return (
-        <button onClick={addRow}>Add Row</button>
+        <button className='add-button' onClick={addRow}>Add New Row +</button>
     );
 };
 

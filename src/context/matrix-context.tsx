@@ -1,4 +1,5 @@
 import React, { createContext, useState, ReactNode, useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { Cell, MatrixContextType } from "../types";
 
@@ -21,7 +22,7 @@ const generateInitialMatrix = (M: number, N: number): Cell[][] => {
   for (let i = 0; i < M; i++) {
     const row: Cell[] = [];
     for (let j = 0; j < N; j++) {
-      row.push({ id: i * N + j, amount: generateRandomAmount() });
+      row.push({ id: uuidv4(), amount: generateRandomAmount() });
     }
     matrix.push(row);
   }
@@ -58,7 +59,7 @@ export const MatrixProvider: React.FC<{ children: ReactNode }> = ({
     setMatrix((prevMatrix) => [
       ...prevMatrix,
       prevMatrix[0].map(() => ({
-        id: Date.now(),
+        id: uuidv4(),
         amount: generateRandomAmount(),
       })),
     ]);

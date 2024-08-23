@@ -1,8 +1,12 @@
 .container {
-  padding: 40px;
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .table {
+  table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
 }
@@ -16,21 +20,39 @@
 }
 
 .table td:first-child {
+  font-weight: 600;
   background-color: #4464443a;
 }
 
-.table td:not(:first-child) {
+.table tbody td:not(:first-child) {
   cursor: pointer;
+  user-select: none;
+}
+
+.table tbody td:not(:first-child):hover {
+  background-color: #74737341;
+}
+
+.table tbody td:not(:first-child):active {
+  background-color: #87868641;
+}
+
+.table tbody td:not(:last-child):active {
+  font-size: 20px;
 }
 
 .table th, .table td{
   padding: 14px;
   border: 1px solid green;
+  transition: all ease-in-out 0.2s;
 }
 
-.heatmap-cell {
-  background: linear-gradient(to right, #4caf50 0%, #f44336 100%);
-  color: white;
+.close-container {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-button path {
@@ -40,12 +62,36 @@
 .close-button { 
   width: 30px;
   height: 30px;
+  transition: all ease-in-out 0.2s;
+}
+
+.close-button:hover { 
+  width: 35px;
+  height: 35px;
+}
+
+.close-button path:hover { 
+  fill: rgb(233, 72, 72);
 }
 
 .sum-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.add-button {
+  padding: 4px 16px;
+  background-color: #347a36;
+  outline: none;
+  border: 1px solid green;
+  cursor: pointer;
+  border-radius: 4px;
+  align-self: start;
+}
+
+.add-button:hover {
+  background-color: #3c8b3f;
 }
 
 
