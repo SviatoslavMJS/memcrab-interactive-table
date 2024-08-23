@@ -1,4 +1,4 @@
-type CellId = number;
+type CellId = string;
 
 type CellValue = number;
 
@@ -7,12 +7,21 @@ type Cell = {
   amount: CellValue;
 };
 
-type MatrixContextType = {
-    matrix: Cell[][];
-    incrementCellValue: (rowIndex: number, colIndex: number) => void;
-    highlightNearestCells: (rowIndex: number, colIndex: number) => void;
-    removeRow: (rowIdex: number) => void;
-    addRow: () => void;
+type FormValues = {
+  rows: string;
+  columns: string;
+  cellsCount: string;
 };
 
-export type { CellId, CellValue, Cell, MatrixContextType };
+type MatrixContextType = {
+  matrix: Cell[][];
+  addRow: () => void;
+  values: FormValues;
+  activeCell: Cell | null;
+  removeRow: (rowIdex: number) => void;
+  setValues: React.Dispatch<React.SetStateAction<FormValues>>;
+  setActiveCell: React.Dispatch<React.SetStateAction<Cell | null>>;
+  incrementCellValue: (rowIndex: number, colIndex: number) => void;
+};
+
+export type { CellId, CellValue, Cell, FormValues, MatrixContextType };

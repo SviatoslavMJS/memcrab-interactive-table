@@ -1,16 +1,21 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { Cell } from "../types";
 
-export const findNearestCells = (
-  matrix: Cell[][],
-  targetValue: number,
-  count: number = 5
-): Cell[] => {
-  const flattened = matrix.flat();
-  const sorted = flattened.sort(
-    (a, b) =>
-      Math.abs(a.amount - targetValue) - Math.abs(b.amount - targetValue)
-  );
-  return sorted.slice(0, count);
+export const generateRandomAmount = (): number => {
+  return Math.floor(Math.random() * 900) + 100;
+};
+
+export const generateInitialMatrix = (M: number, N: number): Cell[][] => {
+  const matrix: Cell[][] = [];
+  for (let i = 0; i < M; i++) {
+    const row: Cell[] = [];
+    for (let j = 0; j < N; j++) {
+      row.push({ id: uuidv4(), amount: generateRandomAmount() });
+    }
+    matrix.push(row);
+  }
+  return matrix;
 };
 
 export const getAmountPercent = (sum: number, amount: number) => {
@@ -37,4 +42,28 @@ export const parseMatrix = (matrix: Cell[][]) => {
     rowSumValues,
     averageValues: colSumValues.map((num) => num / 2),
   };
+};
+
+export const getNearestCells = ({
+  cell,
+  matrix,
+  cellsCount,
+}: {
+  matrix: Cell[][];
+  cell: Cell | null;
+  cellsCount: number;
+}) => {
+  if (!cell) return [];
+  const { id, amount } = cell;
+
+  return matrix
+    .flat()
+    .filter((cell) => cell.id !== id)
+    .map((cell) => ({
+      id: cell.id,
+      amount: Math.abs(cell.amount - amount),
+    }))
+    .sort((a, b) => a.amount - b.amount)
+    .slice(0, cellsCount ?? 0)
+    .map((cell) => cell.id);
 };

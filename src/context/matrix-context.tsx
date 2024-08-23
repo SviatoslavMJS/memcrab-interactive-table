@@ -1,54 +1,53 @@
-import React, { createContext, useState, ReactNode, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
+import {
+  useState,
+  ReactNode,
+  useEffect,
+  useCallback,
+  createContext,
+} from "react";
 
 import { Cell, MatrixContextType } from "../types";
+import { generateInitialMatrix, generateRandomAmount } from "../utils";
+
+const initialValues = {
+  rows: "",
+  columns: "",
+  cellsCount: "",
+};
 
 const initialContext = {
   matrix: [],
+  activeCell: null,
   addRow: () => {},
   removeRow: () => {},
+  setValues: () => {},
+  values: initialValues,
+  setActiveCell: () => {},
   incrementCellValue: () => {},
-  highlightNearestCells: () => {},
 };
 
 export const MatrixContext = createContext<MatrixContextType>(initialContext);
 
-const generateRandomAmount = (): number => {
-  return Math.floor(Math.random() * 900) + 100;
-};
-
-const generateInitialMatrix = (M: number, N: number): Cell[][] => {
-  const matrix: Cell[][] = [];
-  for (let i = 0; i < M; i++) {
-    const row: Cell[] = [];
-    for (let j = 0; j < N; j++) {
-      row.push({ id: uuidv4(), amount: generateRandomAmount() });
-    }
-    matrix.push(row);
-  }
-  return matrix;
-};
-
 export const MatrixProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [matrix, setMatrix] = useState<Cell[][]>(generateInitialMatrix(5, 5));
+  const [matrix, setMatrix] = useState<Cell[][]>([]);
+  const [values, setValues] = useState(initialValues);
+  const [activeCell, setActiveCell] = useState<Cell | null>(null);
+
   const incrementCellValue = useCallback(
     (rowIndex: number, colIndex: number) => {
-      console.log("outside");
       setMatrix((prevMatrix) => {
         const newMatrix = JSON.parse(JSON.stringify(prevMatrix));
         newMatrix[rowIndex][colIndex].amount += 1;
-        console.log("click", { row: newMatrix[rowIndex] });
         return newMatrix;
       });
+      if (activeCell) {
+        setActiveCell({ ...activeCell, amount: activeCell?.amount + 1 });
+      }
     },
-    []
-  );
-
-  const highlightNearestCells = useCallback(
-    (rowIndex: number, colIndex: number) => {},
-    []
+    [activeCell]
   );
 
   const removeRow = useCallback((rowIndex: number) => {
@@ -65,14 +64,25 @@ export const MatrixProvider: React.FC<{ children: ReactNode }> = ({
     ]);
   }, []);
 
+  useEffect(() => {
+    const rows = Number(values.rows);
+    const columns = Number(values.columns);
+    if (rows > 0 && columns > 1) {
+      setMatrix(generateInitialMatrix(rows, columns));
+    }
+  }, [values]);
+
   return (
     <MatrixContext.Provider
       value={{
         matrix,
         addRow,
+        values,
         removeRow,
+        setValues,
+        activeCell,
+        setActiveCell,
         incrementCellValue,
-        highlightNearestCells,
       }}
     >
       {children}

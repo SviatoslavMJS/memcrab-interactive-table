@@ -1,21 +1,14 @@
 import { useContext, useState } from "react";
 
+import { getAmountPercent, parseMatrix } from "../utils";
 import { MatrixContext } from "../context/matrix-context";
 import CloseCircle from "../assets/icons/close-circle.svg?react";
-import { getAmountPercent, parseMatrix } from "../utils";
+
+import { AmountCell } from "./amount-cell";
 
 const MatrixTable: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>();
-  const { matrix, incrementCellValue, highlightNearestCells, removeRow } =
-    useContext(MatrixContext);
-
-  const handleCellClick = (rowIndex: number, colIndex: number) => {
-    incrementCellValue(rowIndex, colIndex);
-  };
-
-  const handleCellHover = (rowIndex: number, colIndex: number) => {
-    highlightNearestCells(rowIndex, colIndex);
-  };
+  const { matrix, removeRow } = useContext(MatrixContext);
 
   const { averageValues, rowSumValues } = parseMatrix(matrix);
 
@@ -45,21 +38,13 @@ const MatrixTable: React.FC = () => {
               );
 
               return (
-                <td
-                  key={cell.id}
-                  onClick={() => handleCellClick(rowIndex, colIndex)}
-                  onMouseOver={() => handleCellHover(rowIndex, colIndex)}
-                  style={
-                    showPercent
-                      ? {
-                          background: `linear-gradient(to right, #52ae55 0% ${percentAmount}%, #242424 ${percentAmount}% 100%)`,
-                          color: "white",
-                        }
-                      : {}
-                  }
-                >
-                  {showPercent ? `${percentAmount}%` : cell.amount}
-                </td>
+                <AmountCell
+                  cell={cell}
+                  rowIndex={rowIndex}
+                  colIndex={colIndex}
+                  showPercent={showPercent}
+                  percentAmount={percentAmount}
+                />
               );
             })}
 
